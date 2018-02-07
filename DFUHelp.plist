@@ -1,0 +1,48 @@
+{
+	"1;[Text];About DFU" = {
+		"1.1;[Text];What is DFU" = {
+			"1.1.1;[Text];A Device Firmware Update (short DFU) is the process of updating the firmware (the application, SoftDevice, bootloader, or a combination of these) on the device to which you are connected." = "";
+		};
+		"1.2;[Text];How it works" = {
+			"1.2.1;[Text];When performing a DFU, you transmit a DFU package that contains the firmware and required metadata to the connected device. The device validates the received package and, if validation is successful, installs the new firmware." = "";
+		};
+		"1.3;[Text];Other information" = {
+			"1.3.1;[Text];See the documentation of the BLE Secure DFU Bootloader example for more information:" = "";
+			"1.3.2;[Hyperlink];http://infocenter.nordicsemi.com/topic/com.nordic.infocenter.sdk5.v13.0.0/ble_sdk_app_dfu_bootloader.html" = "";
+			"1.3.3;[Text];This DFU version is 4.0.2. See the link on cocoapods:" = "";
+			"1.3.4;[Hyperlink];https://cocoapods.org/pods/iOSDFULibrary" = "";
+		};
+	};
+	"2;[Text];Create a DFU package" = {
+		"2.1;[Text];How to start" = {
+			"2.1.1;[Text];A DFU package consists of an init packet, the new firmware image, and a manifest file. The init packet contains information about the firmware image that is used to validate the image. " = "";
+			"2.1.2;[Hyperlink];http://infocenter.nordicsemi.com/topic/com.nordic.infocenter.tools/dita/tools/nrfutil/nrfutil_pkg.html" = "";
+			"2.1.3;[Text];Use the nrfutil tool to create a DFU package. The tool is available on Github. See the links for more information: " = "";
+			"2.1.4;[Hyperlink];https://github.com/NordicSemiconductor/pc-nrfutil" = "";
+		};
+	};
+	"3;[Text];Import files" = {
+		"3.1;[Text];Add files from email" = {
+			"3.1.1;[Text];Locate target files:" = "";
+			"3.1.2;[Image];Help_image_openEmail" = "";
+			"3.1.3;[Text];Share the .bin or .zip file with nRF Connect:" = "";
+			"3.1.4;[Image];Help_image_sharingFiles" = "";
+			"3.1.5;[Text];Find your files in nRF Connect:" = "";
+			"3.1.6;[Image];Help_image_findFiles" = "";
+		};
+		"3.2;[Text];Add files from iTunes" = {
+			"3.2.1;[Text];Connect to iTunes." = "";
+			"3.2.2;[Text];Make sure you have the latest version of iTunes installed on your PC." = "";
+			"3.2.3;[Text];Select \"Apps\" in Settings:" = "";
+			"3.2.4;[Image];Help_image_appsSelection" = "";
+			"3.2.5;[Text];Scroll to the \"File Sharing\" section:" = "";
+			"3.2.6;[Image];Help_image_fileSharing" = "";
+			"3.2.7;[Text];Choose \"nRF Connect\"." = "";
+			"3.2.8;[Text];Click the \"Add\" button or drag a file onto the document list pane." = "";
+		};
+		"3.3;[Text];Included examples" = {
+			"3.3.1;[Text];The included DFU example firmwares are compatible with SDK release 12.0.2. Other versions are available on the following site:" = "";
+			"3.3.2;[Hyperlink];http://developer.nordicsemi.com/nRF5_SDK/" = "";
+		};
+	};
+}
