@@ -2,7 +2,7 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:/Users/jiajunqiu/Desktop/nrfConnect/Qiduo.xcodeproj">
+      location = "group:Qiduo.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">
