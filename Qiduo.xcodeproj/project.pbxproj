@@ -240,7 +240,6 @@
 		87FE86B01BE8C8A8000A9270 /* ScanningDevicePageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87FE86AF1BE8C8A8000A9270 /* ScanningDevicePageViewModel.swift */; };
 		87FFE6FB1B6A4FD70012DA09 /* BLEAdertisementPackageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87FFE6FA1B6A4FD70012DA09 /* BLEAdertisementPackageHandler.swift */; };
 		87FFE6FD1B6F67F20012DA09 /* AdertisementPackageWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87FFE6FC1B6F67F20012DA09 /* AdertisementPackageWrapper.swift */; };
-		E1506162A849AB54DC68511F /* Pods_nRF_Connect.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CB087B55D51F3F10D1485B53 /* Pods_nRF_Connect.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -506,7 +505,6 @@
 				8733E33D1C5B69C500BF64FA /* SystemConfiguration.framework in Frameworks */,
 				8733E33B1C5B69BC00BF64FA /* libz.tbd in Frameworks */,
 				8733E3391C5B69AD00BF64FA /* libc++.tbd in Frameworks */,
-				E1506162A849AB54DC68511F /* Pods_nRF_Connect.framework in Frameworks */,
 				65B8E3C5DE057A8782FB020E /* Pods_Qiduo.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1103,8 +1101,9 @@
 				TargetAttributes = {
 					87E74A451B32F71F0029D32E = {
 						CreatedOnToolsVersion = 7.0;
+						DevelopmentTeam = CT959WGKB3;
 						LastSwiftMigration = 0910;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -1561,9 +1560,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = CT959WGKB3;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1573,6 +1572,7 @@
 				LD_MAP_FILE_PATH = "$(PRODUCT_NAME)-LinkMap-$(CURRENT_VARIANT)-$(CURRENT_ARCH).txt";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = com.qiu.qiduo;
 				PRODUCT_NAME = Qiduo;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1592,8 +1592,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = CT959WGKB3;
 				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1604,6 +1604,7 @@
 				LD_MAP_FILE_PATH = "$(PRODUCT_NAME)-LinkMap-$(CURRENT_VARIANT)-$(CURRENT_ARCH).txt";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = com.qiu.qiduo;
 				PRODUCT_NAME = Qiduo;
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
