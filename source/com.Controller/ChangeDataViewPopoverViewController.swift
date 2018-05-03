@@ -9,8 +9,7 @@
 import Foundation
 import UIKit
 
-public enum AdvertisementDataForm : Int
-{
+public enum AdvertisementDataForm : Int {
     case notAvailable = 0
     case beaconData = 1
     case manufacturerData4_1 = 2
@@ -20,7 +19,7 @@ public enum AdvertisementDataForm : Int
 }
 
 public protocol ChangeDataViewPopoverDelegate {
-    func userChosenManufacturerDataFormatReady(_ userChoice: AdvertisementDataForm, deviceID: String, atRow: Int)
+    func userChosenDataFormatReady(_ userChoice: AdvertisementDataForm, deviceID: String, indexPath: IndexPath)
 }
 
 open class ChangeDataViewPopoverViewController : UIViewController {
@@ -61,11 +60,11 @@ open class ChangeDataViewPopoverViewController : UIViewController {
     let sizeForManufacturerDatView = CGSize(width: 350, height: 180)
 
     var deviceID: String?
-    var atRow: Int?
+    var atRow: IndexPath?
 
     var changeDataViewPopoverDelegate: ChangeDataViewPopoverDelegate?
     
-    var currentFormat = AdvertisementDataForm.notAvailable
+    var currentFormat: AdvertisementDataForm!
     
     var chosenLabel: UILabel?
     
@@ -77,26 +76,19 @@ open class ChangeDataViewPopoverViewController : UIViewController {
         initializeViews()
     }
     
-    func initializeViews()
-    {
-        guard let label = chosenLabel else {
-            return
-        }
-        if label.text == DeviceTableViewCell.ManufacturerDataButtonRestorationKey
-        {
-            // disale service data choices
+    func initializeViews() {
+        guard let label = chosenLabel else { return }
+        if label.text == DeviceTableViewCell.ManufacturerDataButtonRestorationKey {
+            // disable service data choices
             hideServiceDataButtons()
             initialManufacturerDataCheckButtons()
-            if let chosenButton = getManufacturerDataChosenButton(currentFormat)
-            {
+            if let chosenButton = getManufacturerDataChosenButton(currentFormat) {
                 chosenButton.isChecked = true
             }
-        } else if label.text == DeviceTableViewCell.ServiceDataButtonRestorationKey
-        {
+        } else if label.text == DeviceTableViewCell.ServiceDataButtonRestorationKey {
             hideManufacturerDataButtons()
             initialServiceDataCheckButtons()
-            if let chosenButton = getServiceDataChosenButton(currentFormat)
-            {
+            if let chosenButton = getServiceDataChosenButton(currentFormat) {
                 chosenButton.isChecked = true
             }
         }
@@ -111,11 +103,9 @@ open class ChangeDataViewPopoverViewController : UIViewController {
         ServiceDataCheckButton.contentHorizontalAlignment = UIControlContentHorizontalAlignment.left
     }
     
-    func getManufacturerDataChosenButton(_ choice: AdvertisementDataForm) -> CheckBox!
-    {
+    func getManufacturerDataChosenButton(_ choice: AdvertisementDataForm) -> CheckBox! {
         var chosenButton: CheckBox?
-        switch choice
-        {
+        switch choice {
             case AdvertisementDataForm.beaconData:
                 chosenButton = BeaconDataCheckButton
                 break
@@ -212,15 +202,13 @@ open class ChangeDataViewPopoverViewController : UIViewController {
         }
     }
     
-    func initialManufacturerDataCheckButtons()
-    {
+    func initialManufacturerDataCheckButtons() {
         BeaconDataCheckButton.isChecked = false
         ManufacturerData4_1CheckButton.isChecked = false
         ManufacturerDataCheckButton.isChecked = false
     }
     
-    func initialServiceDataCheckButtons()
-    {
+    func initialServiceDataCheckButtons() {
         ServiceDataCheckButton.isChecked = false
         EddystoneEIDCheckButton.isChecked = false
     }
@@ -232,7 +220,7 @@ open class ChangeDataViewPopoverViewController : UIViewController {
             {
                 self.setUserChoiceValue(newValue)
             }
-            self.changeDataViewPopoverDelegate!.userChosenManufacturerDataFormatReady(self.currentFormat, deviceID: self.deviceID!, atRow: self.atRow!)
+            self.changeDataViewPopoverDelegate!.userChosenDataFormatReady(self.currentFormat, deviceID: self.deviceID!, indexPath: self.atRow!)
         }
     }
     

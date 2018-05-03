@@ -44,12 +44,9 @@ class AppInformationViewController: UIViewController {
     
     fileprivate func addContent() {
         let header = "nRF Connect(iOS) " + AppInfo.version + " includes bug fixes and new features. This updates:" + Symbols.newRow
-        let line1 = Symbols.whiteBullet + " Supports micro:bit" + Symbols.newRow
-        let line2 = Symbols.whiteBullet + " Adds option to disable rename feature in bootloader mode" + Symbols.newRow
-        let line3 = Symbols.whiteBullet + " Fixes an issue on filter" + Symbols.newRow
-        let line4 = Symbols.whiteBullet + " Fixes an issue when parsing manufacture advertisement data" + Symbols.newRow
-        let line5 = Symbols.whiteBullet + " Fixes an issue when parsing Eddystone advertisement data" + Symbols.newRow
-        let line6 = Symbols.whiteBullet + " Updates UI for iPhoneX " + Symbols.newRow
-        self.ContentLabel.text = header + line1 + line2 + line3 + line4 + line5 + line6
+        let line1 = Symbols.whiteBullet + " Improve performance for scanner" + Symbols.newRow
+        let line2 = Symbols.whiteBullet + " Add support for experimental buttonless DFU"  + Symbols.newRow
+        let line3 = Symbols.whiteBullet + " Fix issue when observe broadcasting interval" + Symbols.newRow
+        self.ContentLabel.text = header + line1 + line2 + line3
     }
 }

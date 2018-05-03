@@ -78,16 +78,6 @@ class DatFileViewController: UIViewController, UITableViewDelegate, UITableViewD
         return cellView
     }
     
-//    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-//        if editingStyle == .delete
-//        {
-//            self.datFilesViewModel.removeCell(atRow: indexPath.row)
-//            _ = self.datFilesViewModel.modifyFirmware()
-//            self.datFilesTableView.deleteRows(at: [indexPath], with: .fade)
-//        }
-//        setNavigationButtonStatus()
-//    }
-    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let destination = segue.destination as! FileTypeViewController
         destination.fileTypeViewModel.firmware = self.datFilesViewModel.firmware

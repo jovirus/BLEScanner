@@ -24,8 +24,14 @@ internal class BLEDevice {
     }
     private(set) var rssiValue: Int!
     var advertisementPackage = AdvertisementPackageWrapper()
-    var cBPeripheral: CBPeripheral
+    var cBPeripheral: CBPeripheral!
     var createdAt: Date
+    
+    init() {
+        self.createdAt = Date()
+        self.connectionStatus = .connected
+    }
+
     
     init(deviceName: String!, deviceID: String, connectionStatus: CBPeripheralState, deviceSignalStrengthen: Int, advertisementPackage: AdvertisementPackageWrapper, peripheral: CBPeripheral)
     {
@@ -60,9 +66,7 @@ internal class BLEDevice {
     }
     
     func update(newBLEDevice: BLEDevice) {
-        guard newBLEDevice.deviceID == self.deviceID else {
-            return
-        }
+        guard newBLEDevice.deviceID == self.deviceID else { return }
         self.deviceName = newBLEDevice.deviceName
         self.deviceID = newBLEDevice.deviceID
         self.connectionStatus = newBLEDevice.connectionStatus

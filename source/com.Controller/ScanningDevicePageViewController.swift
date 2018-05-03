@@ -17,6 +17,7 @@ extension ScanningDevicePageViewController: ScanButtonSuspendedDelegate {
     }
 }
 
+//MARK: - Pop up windows
 extension ScanningDevicePageViewController: BLEDeviceManagerBleHardwareStatusChangedDelegate {
     func hasBleHardwareStatusChanged(_ isAvailable: Bool) {
         let state = self.scanningDevicePageViewModel.BleHardwareStatusChanged(isAvailable)
@@ -31,48 +32,30 @@ extension ScanningDevicePageViewController: BLEDeviceManagerBleHardwareStatusCha
 }
 
 extension ScanningDevicePageViewController: ChangeDataViewPopoverDelegate {
-    func userChosenManufacturerDataFormatReady(_ userChoice: AdvertisementDataForm, deviceID: String, atRow: Int) {
-        if let item = self.userChoices[deviceID] {
-            item.setUserChoiceValue(userChoice)
-        } else {
-            let choice = UserChoiceOnDevice()
-            choice.setUserChoiceValue(userChoice)
-            userChoices[deviceID] = UserChoiceOnDevice()
-        }
-        let result = scanningDevicePageViewModel.deviceTableCellViewModelList.index { (device) -> Bool in
-            return device.deviceID == deviceID
-        }
-        if let cell = getVisibleCellView(deviceID), let cellViewModelIndex = result {
-            adjustUserChosenCellView(cell, cellViewModel: self.scanningDevicePageViewModel.deviceTableCellViewModelList[cellViewModelIndex])
-        }
+    func userChosenDataFormatReady(_ userChoice: AdvertisementDataForm, deviceID: String, indexPath: IndexPath) {
+        guard let cache = self.userChoices[deviceID] else { return }
+        cache.setUserChoiceValue(userChoice)
+        cache.expandedHeight = nil
+        reloadRowAt(indexPath.row)
     }
 }
 
 extension ScanningDevicePageViewController {
-    //MARK Pop up windows
     @objc func userChoicePopup(_ action:UITapGestureRecognizer) {
-        guard let changeDataViewPopoverViewController = self.advDataViewPopoverViewController else { return }
-        if let sender = action.view as? UILabel , sender.text == DeviceTableViewCell.ManufacturerDataButtonRestorationKey {
-            let cellViewModel = scanningDevicePageViewModel.deviceTableCellViewModelList[sender.tag]
-            if let format = userChoices[cellViewModel.deviceID]
-            {
-                changeDataViewPopoverViewController.currentFormat = format.chosenFormatManufacturerData
-            }
-            changeDataViewPopoverViewController.deviceID = cellViewModel.deviceID
-            changeDataViewPopoverViewController.atRow = sender.tag
-            changeDataViewPopoverViewController.chosenLabel = sender
+        guard let sender = action.view as? UILabel, let changeDataViewPopoverViewController = self.advDataViewPopoverViewController else { return }
+        let cellViewModel = scanningDevicePageViewModel.deviceTableCellViewModelList[sender.tag]
+        let indexPath = getIndexPath(sender.tag)
+        guard let format = userChoices[cellViewModel.deviceID] else { return }
+        if sender.text == DeviceTableViewCell.ManufacturerDataButtonRestorationKey {
+            changeDataViewPopoverViewController.currentFormat = format.chosenFormatManufacturerData
             changeDataViewPopoverViewController.preferredContentSize = changeDataViewPopoverViewController.sizeForManufacturerDatView
-        } else if let sender = action.view as? UILabel , sender.text == DeviceTableViewCell.ServiceDataButtonRestorationKey {
-            let cellViewModel = scanningDevicePageViewModel.deviceTableCellViewModelList[sender.tag]
-            if let format = userChoices[cellViewModel.deviceID]
-            {
-                changeDataViewPopoverViewController.currentFormat = format.chosenFormatServiceData
-            }
-            changeDataViewPopoverViewController.deviceID = cellViewModel.deviceID
-            changeDataViewPopoverViewController.atRow = sender.tag
-            changeDataViewPopoverViewController.chosenLabel = sender
+        } else if sender.text == DeviceTableViewCell.ServiceDataButtonRestorationKey {
+            changeDataViewPopoverViewController.currentFormat = format.chosenFormatServiceData
             changeDataViewPopoverViewController.preferredContentSize = changeDataViewPopoverViewController.sizeForServiceDatView
         }
+        changeDataViewPopoverViewController.deviceID = cellViewModel.deviceID
+        changeDataViewPopoverViewController.atRow = indexPath
+        changeDataViewPopoverViewController.chosenLabel = sender
         changeDataViewPopoverViewController.modalPresentationStyle = .popover
         let popoverWriteValueCharacteristic = changeDataViewPopoverViewController.popoverPresentationController
         popoverWriteValueCharacteristic?.permittedArrowDirections = UIPopoverArrowDirection()
@@ -104,11 +87,12 @@ extension ScanningDevicePageViewController: SWRevealViewControllerDelegate {
     }
     
     fileprivate func colorSetUpForIcon(_ cell: DeviceTableViewCell, cellViewModel: ScanningDevicePageCellViewModel) {
-        if isViewOnSideBarMode.0 {
-            setUpIconBackground(cell, displayColor: cellViewModel.displayColor, alphaMiddleLayer: self.isViewOnSideBarMode.1)
-        } else
-        {
-            setUpIconBackground(cell, displayColor: nil, alphaMiddleLayer: self.isViewOnSideBarMode.1)
+        DispatchQueue.main.async {
+            if self.isViewOnSideBarMode.0 {
+                self.setUpIconBackground(cell, displayColor: cellViewModel.displayColor, alphaMiddleLayer: self.isViewOnSideBarMode.1)
+            } else {
+                self.setUpIconBackground(cell, displayColor: nil, alphaMiddleLayer: self.isViewOnSideBarMode.1)
+            }
         }
     }
     
@@ -132,8 +116,7 @@ extension ScanningDevicePageViewController: SWRevealViewControllerDelegate {
 
 extension ScanningDevicePageViewController {
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
-        guard let key = keyPath, key == UserPreferenceScannerTimeOutKey, let changedTo = change else { return }
-        guard let _ = changedTo.values.first else { return }
+        guard let key = keyPath, key == UserPreferenceScannerTimeOutKey, let changedTo = change, let _ = changedTo.values.first else { return }
         switch self.scanningDevicePageViewModel.scanButtonStatus {
         case .scanning:
             changeScanState()
@@ -198,15 +181,19 @@ class ScanningDevicePageViewController: UIViewController, UINavigationController
     var isViewOnSideBarMode : (Bool, iconMiddleLayerAlpha: CGFloat) = (false, 1.00)
 
     fileprivate class UserChoiceOnDevice {
-        var atRow: Int?
+        var index: IndexPath
         var isExpandedModel: Bool = false
-        var chosenFormatManufacturerData = AdvertisementDataForm.notAvailable
-        var chosenFormatServiceData = AdvertisementDataForm.notAvailable
+        var expandedHeight: CGFloat!
+        var isFavourite: Bool = false
+        var chosenFormatManufacturerData = AdvertisementDataForm.manufacturerData4_1
+        var chosenFormatServiceData = AdvertisementDataForm.eddystone
         
-        func setUserChoiceValue(_ choice: AdvertisementDataForm)
-        {
-            switch choice
-            {
+        init(_ index: IndexPath) {
+            self.index = index
+        }
+        
+        func setUserChoiceValue(_ choice: AdvertisementDataForm) {
+            switch choice {
                 case .eddystone:
                     chosenFormatServiceData = .eddystone
                     break
@@ -226,12 +213,11 @@ class ScanningDevicePageViewController: UIViewController, UINavigationController
                     break
             }
         }
-        var isFavourite: Bool = false
+        
         func setDefault() {
             self.isExpandedModel = false
-            self.atRow = nil
-            self.chosenFormatManufacturerData = AdvertisementDataForm.notAvailable
-            self.chosenFormatServiceData = AdvertisementDataForm.notAvailable
+            self.chosenFormatManufacturerData = AdvertisementDataForm.manufacturerData4_1
+            self.chosenFormatServiceData = AdvertisementDataForm.beaconData
         }
     }
     
@@ -298,14 +284,12 @@ class ScanningDevicePageViewController: UIViewController, UINavigationController
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-//        BLEDeviceManager.instance().stopScan()
     }
     
     func initializePopoverController()
     {
         self.advDataViewPopoverViewController = self.storyboard!.instantiateViewController(withIdentifier: "ChangeDataViewPopoverViewController") as? ChangeDataViewPopoverViewController
-        if let result = self.advDataViewPopoverViewController
-        {
+        if let result = self.advDataViewPopoverViewController {
             result.changeDataViewPopoverDelegate = self
         }
     }
@@ -329,10 +313,11 @@ class ScanningDevicePageViewController: UIViewController, UINavigationController
         self.view.addSubview(coverView)
     }
     
-    @objc func refresh(_ sender:AnyObject)
-    {
-        // Code to refresh table view
-        stopDeviceUpdateTimer()
+    @objc func refresh(_ sender:AnyObject) {
+        if self.scanningDevicePageViewModel.scanButtonStatus == .scanning {
+            // Code to refresh table view
+            stopDeviceUpdateTimer()
+        }
         //delete the listOfDevice Array and the view list
         scanningDevicePageViewModel.freshLocalList()
         //delete all user cached setting except the favourites
@@ -344,7 +329,9 @@ class ScanningDevicePageViewController: UIViewController, UINavigationController
             }
         }
         //clear tables
+        guard self.scanningDevicePageViewModel.didDataSourceChanged else { return }
         deviceTableView.reloadData()
+        self.scanningDevicePageViewModel.didDataSourceChanged = false
         //end refreshing
         self.refreshControl.endRefreshing()
         if self.scanningDevicePageViewModel.scanButtonStatus == .scanning {
@@ -356,8 +343,7 @@ class ScanningDevicePageViewController: UIViewController, UINavigationController
         }
     }
     
-    func setBarItemTextFont()
-    {
+    func setBarItemTextFont() {
        self.scanPeripheralBarButtom.setTitleTextAttributes([ NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 14)], for: UIControlState())
     }
     //ENDMARK
@@ -367,10 +353,8 @@ class ScanningDevicePageViewController: UIViewController, UINavigationController
         changeScanState()
     }
     
-    @objc func changeScanState()
-    {
-        if self.scanningDevicePageViewModel.scanButtonStatus == .scanning
-        {
+    @objc func changeScanState() {
+        if self.scanningDevicePageViewModel.scanButtonStatus == .scanning {
             BLEDeviceManager.instance().stopScan()
             stopDeviceUpdateTimer()
             scanningDevicePageViewModel.pauseAdvertiserTimeTracker()
@@ -380,8 +364,7 @@ class ScanningDevicePageViewController: UIViewController, UINavigationController
             scanPeripheralBarButtom.title = ScanningDevicePageViewModel.ScanState.offScan.description()
             self.deviceTableView.reloadData()
         }
-        else if self.scanningDevicePageViewModel.scanButtonStatus == .offScan
-        {
+        else if self.scanningDevicePageViewModel.scanButtonStatus == .offScan {
             scanningDevicePageViewModel.changeScanButtonStatusTo(ScanningDevicePageViewModel.ScanState.scanning)
             fireScannerTimmer()
             BLEDeviceManager.instance().discoverDevices()
@@ -391,7 +374,6 @@ class ScanningDevicePageViewController: UIViewController, UINavigationController
             stopDeviceUpdateTimer()
             scanningDevicePageViewModel.pauseAdvertiserTimeTracker()
             stopScannerTimer()
-            self.deviceTableView.reloadData()
         }
     }
     
@@ -415,35 +397,35 @@ class ScanningDevicePageViewController: UIViewController, UINavigationController
     
     //MARK: Timmer - scanning controller
     func fireScannerTimmer() {
-        guard scanningDevicePageViewModel.isOnScanningState() else {
-            return
-        }
+        guard scanningDevicePageViewModel.isOnScanningState() else { return }
         scannerTimmer = Timer.scheduledTimer(timeInterval: UserPreference.instance.scannerTimeOut.getTimeInterval(), target: self, selector: #selector(ScanningDevicePageViewController.changeScanState), userInfo: nil, repeats: false)
     }
     
     // it may apply when suspending and stop scanning state
     @objc func updateDeviceTableView() {
-        //guard !self.scanningDevicePageViewModel.isTableViewScrolling() else { return }
         self.scanningDevicePageViewModel.BuildDeviceTableCellViewModel()
-        manageClientSettingsBuffer()
-        self.deviceTableView.reloadData()
-    }
-
-    func manageClientSettingsBuffer() {
-        for (key, value) in userChoices {
-            if let newDevice = self.scanningDevicePageViewModel.deviceTableCellViewModelList.filter({ x in x.deviceID == key }).first {
-               if (newDevice.manufacturerData.beaconDataFormatedString == Symbols.NOT_AVAILABLE && newDevice.manufacturerData.manufactureData4_1FormatedString == Symbols.NOT_AVAILABLE) || newDevice.manufacturerData.rawStringFormat == Symbols.NOT_AVAILABLE {
-                    userChoices[key]?.chosenFormatManufacturerData = AdvertisementDataForm.notAvailable
-               }
-               if newDevice.serviceData.eddystoneFormatedString == Symbols.NOT_AVAILABLE || newDevice.serviceData.rawStringFormat == Symbols.NOT_AVAILABLE {
-                    userChoices[key]?.chosenFormatServiceData = AdvertisementDataForm.notAvailable
-               }
-               if value.isFavourite {
-                    userChoices[key]?.isFavourite = true
-                }
-            } else {
-                //let it be in the cache
+        var newRowsIndexPaths: [IndexPath] = []
+        for index in 0..<self.scanningDevicePageViewModel.deviceTableCellViewModelList.count {
+            let cellViewModel = self.scanningDevicePageViewModel.deviceTableCellViewModelList[index]
+            guard !cellViewModel.isPushedToView else {
+                //if cell is not in the view, not update
+                guard let cell = getVisibleCellView(cellViewModel.deviceID) else { continue }
+                self.updateSignalInterval(cell, cellViewModel: cellViewModel)
+                continue }
+            newRowsIndexPaths.append(self.getIndexPath(index))
+        }
+        
+        
+        DispatchQueue.main.async {
+            guard newRowsIndexPaths.count > 0, self.deviceTableView.numberOfRows(inSection: 0) + newRowsIndexPaths.count == self.scanningDevicePageViewModel.deviceTableCellViewModelList.count else {
+                return
             }
+            self.deviceTableView.insertRows(at: newRowsIndexPaths, with: .top)
+            self.deviceTableView.beginUpdates()
+            self.deviceTableView.endUpdates()
+        }
+        for index in newRowsIndexPaths {
+            self.scanningDevicePageViewModel.deviceTableCellViewModelList[index.row].isPushedToView = true
         }
     }
     
@@ -470,156 +452,224 @@ class ScanningDevicePageViewController: UIViewController, UINavigationController
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let count = self.scanningDevicePageViewModel.deviceTableCellViewModelList.count;
+        let count = self.scanningDevicePageViewModel.deviceTableCellViewModelList.count
         if count > 0 {
             self.noDeviceNotificationView.isHidden = true
-        }
-        else {
+        } else {
             self.noDeviceNotificationView.isHidden = false
         }
         return count
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let row = (indexPath as NSIndexPath).row;
-        if self.scanningDevicePageViewModel.deviceTableCellViewModelList.count > 0 {
-            let cellView = self.scanningDevicePageViewModel.deviceTableCellViewModelList[row]
-            if let userChoice = userChoices[cellView.deviceID] {
-                if userChoice.isExpandedModel {
-                    return UITableViewAutomaticDimension
-                }
-                else {
-                    return scanningDevicePageViewModel.minHeight
-                }
-            } else {
-                return scanningDevicePageViewModel.minHeight
-            }
-        }
-        else {
-            return scanningDevicePageViewModel.minHeight
+        let cellView = self.scanningDevicePageViewModel.deviceTableCellViewModelList[indexPath.row]
+        guard cellView.isSatisfiedForFilter else { return self.scanningDevicePageViewModel.miniHeight }
+        let cache = userChoices[cellView.deviceID]
+        if let userChoice = cache, userChoice.isExpandedModel, let height = userChoice.expandedHeight {
+            return height
+        } else if let userChoice = cache, userChoice.isExpandedModel, userChoice.expandedHeight == nil {
+            return UITableViewAutomaticDimension
+        } else {
+            return scanningDevicePageViewModel.defaulHeight
         }
     }
     
     @IBAction func RowExpandButtonPressed(_ sender: UIButton) {
-        let selectedRowIndex = sender.tag
-        if self.scanningDevicePageViewModel.deviceTableCellViewModelList.count > 0 {
-            let cellViewModel = self.scanningDevicePageViewModel.deviceTableCellViewModelList[selectedRowIndex]
-            if let userChoice = userChoices[cellViewModel.deviceID] {
-                if userChoice.isExpandedModel {
-                    userChoice.isExpandedModel = false
-                }
-                else {
-                    userChoice.isExpandedModel = true
-                }
-            } else {
-                let newUserChoice = UserChoiceOnDevice()
-                newUserChoice.isExpandedModel = true
-                userChoices[cellViewModel.deviceID] = newUserChoice
-            }
-            reloadRowAt(selectedRowIndex)
+        guard let index = getIndexPath(expandButton: sender) else { return }
+        let cellViewModel = self.scanningDevicePageViewModel.deviceTableCellViewModelList[index.row]
+        if let userChoice = userChoices[cellViewModel.deviceID] {
+            userChoice.isExpandedModel = !userChoice.isExpandedModel
+        } else {
+            let newUserChoice = UserChoiceOnDevice(index)
+            newUserChoice.isExpandedModel = true
+            if let data = cellViewModel.serviceData, !data.hasMultiFormation { newUserChoice.chosenFormatServiceData = .serviceDataBytes }
+            if let data = cellViewModel.manufacturerData, !data.hasMultiFormation { newUserChoice.chosenFormatManufacturerData = .manufacturerDataBytes }
+            userChoices[cellViewModel.deviceID] = newUserChoice
         }
+        self.reloadRowAt(index.row)
     }
     
-    fileprivate func reloadRowAt(_ row: Int){
-        let indexPaths: Array<IndexPath> = [getIndexPath(row)]
-        deviceTableView.reloadRows(at: indexPaths, with: UITableViewRowAnimation.automatic)
+    private func getIndexPath(expandButton sender: UIButton) -> IndexPath? {
+        guard let cellView = sender.superview?.superview?.superview?.superview as? DeviceTableViewCell else { return nil }
+        return deviceTableView.indexPath(for: cellView)
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        deviceTableView.deselectRow(at: indexPath, animated: true)
+    }
+    
+    fileprivate func reloadRowAt(_ row: Int) {
+        let indexPaths: [IndexPath] = [getIndexPath(row)]
+        DispatchQueue.main.async {
+            self.deviceTableView.reloadRows(at: indexPaths, with: .automatic)
+            self.deviceTableView.beginUpdates()
+            self.deviceTableView.endUpdates()
+            let cellViewModel = self.scanningDevicePageViewModel.deviceTableCellViewModelList[row]
+            guard let cache = self.userChoices[cellViewModel.deviceID] else { return }
+            guard let cellView = self.getVisibleCellView(cellViewModel.deviceID) else { cache.expandedHeight = self.scanningDevicePageViewModel.miniHeight; return }
+            guard cellView.frame.height != self.scanningDevicePageViewModel.defaulHeight else { return }
+            cache.expandedHeight = cellView.frame.height
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: DeviceTableViewCell = tableView.dequeueReusableCell(withIdentifier: "DeviceTableViewCell", for: indexPath) as! DeviceTableViewCell
-        let row = indexPath.row
-        var listOfdeviceCellVM = self.scanningDevicePageViewModel.deviceTableCellViewModelList
-        if listOfdeviceCellVM.count == 0 {
-            return cell
-        } else if listOfdeviceCellVM.count > 0 {
-            let cellViewModel = listOfdeviceCellVM[row]
-            cell.ConnectPeripheralButton.tag = row
-            cell.ManufacturerDataLabel.tag = row
-            cell.ServiceDataLabel.tag = row
-            cell.FavouriteButton.tag = row
-            cell.RowExpandButton.tag = row
-            cell.deviceName.text = cellViewModel.deviceName
-            cell.isConnectable.text = cellViewModel.connectionStatus
-            cell.deviceSignalStrengthen.text = cellViewModel.rssi
-            cell.intervalValueLabel.text = cellViewModel.interval
-            adjustUserChosenCellView(cell, cellViewModel: cellViewModel)
-            cell.serviceUUID.text = cellViewModel.getServiceUUID()
-            if let format = userChoices[cellViewModel.deviceID] , format.isFavourite == true {
-                setIconFavouriteConstrains(cell, shouldHide: false)
-            } else {
-                setIconFavouriteConstrains(cell, shouldHide: true)
-            }
-            cell.TxPowerLevel.text = cellViewModel.txPowerLevel
-            cell.solicitedServiceUUID.text = cellViewModel.solicitedServiceUUIDString
-            cell.CompleteLocalName.text = cellViewModel.completeLocalName
-            cell.OverflowServiceUUID.text = cellViewModel.getOverflowUUIDs()
-            colorSetUpForIcon(cell, cellViewModel: cellViewModel)
-            showHideConnectButton(cell, isConnectable: cellViewModel.isConnectable)
-            if cellViewModel.isDeviceOutOfRange || !cellViewModel.isValidatedInterval {
-                controlRSSIColor(cell: cell, color: UIColor.lightGray)
-            } else {
-                controlRSSIColor(cell: cell, color: UIColor.black)
-            }
-        }
         return cell
     }
     
-    fileprivate func controlRSSIColor(cell: DeviceTableViewCell, color: UIColor) {
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        let cellView = cell as! DeviceTableViewCell
+        let cellViewModel = self.scanningDevicePageViewModel.deviceTableCellViewModelList[indexPath.row]
+        if let usrCache = self.userChoices[cellViewModel.deviceID], usrCache.isExpandedModel {
+            assignCellHeaderValues(cell: cellView, indexPath: indexPath)
+            assignCellDetailValues(cell: cellView, indexPath: indexPath)
+        }
+        else {
+            assignCellHeaderValues(cell: cellView, indexPath: indexPath)
+        }
+    }
+    
+    private func assignCellDetailValues(cell: DeviceTableViewCell, indexPath: IndexPath) {
+        let cellViewModel = self.scanningDevicePageViewModel.deviceTableCellViewModelList[indexPath.row]
+        setLabelView(cell, cellViewModel: cellViewModel)
+        var showWarning = true
+        if cellViewModel.completeLocalName == Symbols.NOT_AVAILABLE {
+            cell.CompleteLocalName.text = nil
+            cell.CompleteLocalNameLabel.text = nil
+        } else {
+            cell.CompleteLocalNameLabel.text = "Complete Local Name: "
+            cell.CompleteLocalName.text = cellViewModel.completeLocalName
+            showWarning = false
+        }
+        if cellViewModel.txPowerLevel == Symbols.NOT_AVAILABLE {
+            cell.TxPowerLevel.text = nil
+            cell.TxPowerLevelLabel.text = nil
+        } else {
+            cell.TxPowerLevel.text = cellViewModel.txPowerLevel
+            cell.TxPowerLevelLabel.text = "Tx Power: "
+            showWarning = false
+        }
+        if cellViewModel.serviceUUIDDescription == Symbols.NOT_AVAILABLE {
+            cell.serviceUUID.text = nil
+            cell.ServiceUUIDLabel.text = nil
+        } else {
+            cell.serviceUUID.text = cellViewModel.serviceUUIDDescription
+            cell.ServiceUUIDLabel.text = "Service UUID: "
+            showWarning = false
+        }
+        if cellViewModel.solicitedServiceUUIDString == Symbols.NOT_AVAILABLE {
+            cell.solicitedServiceUUID.text = nil
+            cell.SolicitedServiceUUIDLabel.text = nil
+        } else {
+            cell.solicitedServiceUUID.text = cellViewModel.solicitedServiceUUIDString
+            cell.SolicitedServiceUUIDLabel.text = "Solicited Service UUID: "
+            showWarning = false
+        }
+        if cellViewModel.overflowServiceUUIDDescription == Symbols.NOT_AVAILABLE {
+            cell.OverflowServiceUUID.text = nil
+            cell.OverflowServiceUUIDLabel.text = nil
+        } else {
+            cell.OverflowServiceUUID.text = cellViewModel.overflowServiceUUIDDescription
+            cell.OverflowServiceUUIDLabel.text = "Overflow Service UUID: "
+            showWarning = false
+        }
+        if cellViewModel.manufacturerData.rawStringFormat == Symbols.NOT_AVAILABLE {
+            cell.manufacturerData.text = nil
+            cell.ManufacturerDataLabel.text = nil
+        } else {
+            cell.ManufacturerDataLabel.text = DeviceTableViewCell.ManufacturerDataButtonRestorationKey
+            setupManufactureDataLabelPresentation(cell, cellViewModel: cellViewModel)
+            updateManufactureDataField(cell, forCell: cellViewModel)
+            cell.ManufacturerDataLabel.tag = indexPath.row
+            showWarning = false
+        }
+        if cellViewModel.serviceData.rawStringFormat == Symbols.NOT_AVAILABLE {
+            cell.serviceData.text = nil
+            cell.ServiceDataLabel.text = nil
+        } else {
+            cell.ServiceDataLabel.text = DeviceTableViewCell.ServiceDataButtonRestorationKey
+            setupServiceDataLabelPresentation(cell, cellViewModel: cellViewModel)
+            updateServiceDataField(cell, forCell: cellViewModel)
+            cell.ServiceDataLabel.tag = indexPath.row
+            showWarning = false
+        }
+        if showWarning { cell.PlaceholderView.isHidden = false }
+        else { cell.PlaceholderView.isHidden = true }
+        cellViewModel.isVisualized = true
+    }
+    
+    private func assignCellHeaderValues(cell: DeviceTableViewCell, indexPath: IndexPath) {
+        let cellViewModel = self.scanningDevicePageViewModel.deviceTableCellViewModelList[indexPath.row]
+        cell.deviceID = cellViewModel.deviceID
+        cell.RowExpandButton.tag = indexPath.row
+        cell.FavouriteButton.tag = indexPath.row
+        cell.deviceName.text = cellViewModel.deviceName
+        cell.isConnectable.text = cellViewModel.connectionStatus
+        cell.PlaceholderView.isHidden = true
+        if let format = userChoices[cellViewModel.deviceID], format.isFavourite == true {
+            setIconFavouriteConstrains(cell, shouldHide: false)
+        } else {
+            setIconFavouriteConstrains(cell, shouldHide: true)
+        }
+        updateSignalInterval(cell, cellViewModel: cellViewModel)
+        colorSetUpForIcon(cell, cellViewModel: cellViewModel)
+        showHideConnectButton(cell, isConnectable: cellViewModel.isConnectable, indexPath: indexPath)
+    }
+    
+    private func updateSignalInterval(_ cell: DeviceTableViewCell, cellViewModel: ScanningDevicePageCellViewModel) {
+        if cellViewModel.isDeviceOutOfRange || !cellViewModel.isValidatedInterval || !cellViewModel.isSatisfiedForFilter {
+            setRowColor(cell: cell, color: UIColor.lightGray)
+            cell.deviceSignalStrengthen.text = cellViewModel.rssi
+            cell.intervalValueLabel.text = cellViewModel.interval
+        } else {
+            setRowColor(cell: cell, color: UIColor.black)
+            cell.deviceSignalStrengthen.text = cellViewModel.rssi
+            cell.intervalValueLabel.text = cellViewModel.interval
+        }
+    }
+    
+    fileprivate func setRowColor(cell: DeviceTableViewCell, color: UIColor) {
         cell.deviceSignalStrengthen.textColor = color
         cell.intervalValueLabel.textColor = color
+        cell.TxPowerLevel.textColor = color
     }
     
-    fileprivate func ShouldHideDetailView(_ shouldHideFilter: Bool, cell: DeviceTableViewCell) {
-        cell.CompleteLocalName.isHidden = shouldHideFilter
-        cell.manufacturerData.isHidden = shouldHideFilter
-        cell.TxPowerLevel.isHidden = shouldHideFilter
-        cell.solicitedServiceUUID.isHidden = shouldHideFilter
-        cell.serviceUUID.isHidden = shouldHideFilter
-        cell.serviceData.isHidden = shouldHideFilter
-        cell.OverflowServiceUUID.isHidden = shouldHideFilter
-        cell.CompleteLocalNameLabel.isHidden = shouldHideFilter
-        cell.ManufacturerDataLabel.isHidden = shouldHideFilter
-        cell.TxPowerLevel.isHidden = shouldHideFilter
-        cell.SolicitedServiceUUIDLabel.isHidden = shouldHideFilter
-        cell.ServiceUUIDLabel.isHidden = shouldHideFilter
-        cell.ServiceDataLabel.isHidden = shouldHideFilter
-        cell.OverflowServiceUUIDLabel.isHidden = shouldHideFilter
+    fileprivate func setLabelView(_ cell: DeviceTableViewCell, cellViewModel: ScanningDevicePageCellViewModel) {
+        if let data = cellViewModel.serviceData, data.hasMultiFormation {
+            setupServiceDataLabelPresentation(cell, cellViewModel: cellViewModel)
+        } else {
+            deregisterServiceDataLabelPresentation(cell, cellViewModel: cellViewModel)
+        }
+        if let manufData = cellViewModel.manufacturerData, manufData.hasMultiFormation {
+            setupManufactureDataLabelPresentation(cell, cellViewModel: cellViewModel)
+        } else {
+            deregisterManufactureDataLabelPresentation(cell, cellViewModel: cellViewModel)
+        }
     }
     
-    fileprivate func adjustUserChosenCellView(_ cell: DeviceTableViewCell, cellViewModel: ScanningDevicePageCellViewModel) {
-        deregisterManufactureDataLabelPresentation(cell, cellViewModel: cellViewModel)
-        deregisterServiceDataLabelPresentation(cell, cellViewModel: cellViewModel)
-        guard let format = userChoices[cellViewModel.deviceID] else {
-            cell.manufacturerData.text = cellViewModel.manufacturerData.rawStringFormat
-            cell.serviceData.text = cellViewModel.serviceData.rawStringFormat
-            return
+    private func updateManufactureDataField(_ cell: DeviceTableViewCell, forCell viewModel: ScanningDevicePageCellViewModel) {
+        guard let cache = self.userChoices[viewModel.deviceID] else { return }
+        switch cache.chosenFormatManufacturerData {
+        case .beaconData:
+            cell.manufacturerData.text = viewModel.manufacturerData.beaconDataFormatedString
+        case .manufacturerData4_1:
+            cell.manufacturerData.text = viewModel.manufacturerData.manufactureData4_1FormatedString
+        case .manufacturerDataBytes:
+            cell.manufacturerData.text = viewModel.manufacturerData.rawStringFormat
+        default:
+            cell.manufacturerData.text = viewModel.manufacturerData.rawStringFormat
         }
-        if format.chosenFormatManufacturerData == AdvertisementDataForm.beaconData {
-            setupManufactureDataLabelPresentation(cell, cellViewModel: cellViewModel)
-            cell.manufacturerData.text = cellViewModel.manufacturerData.beaconName
-        } else if format.chosenFormatManufacturerData == AdvertisementDataForm.manufacturerDataBytes {
-            setupManufactureDataLabelPresentation(cell, cellViewModel: cellViewModel)
-            cell.manufacturerData.text = cellViewModel.manufacturerData.rawStringFormat
-        } else if format.chosenFormatManufacturerData == AdvertisementDataForm.manufacturerData4_1 {
-            setupManufactureDataLabelPresentation(cell, cellViewModel: cellViewModel)
-            cell.manufacturerData.text = cellViewModel.manufacturerData.manufactureData4_1FormatedString
-        } else if cellViewModel.manufacturerData.beaconDataFormatedString != Symbols.NOT_AVAILABLE || cellViewModel.manufacturerData.manufactureData4_1FormatedString != Symbols.NOT_AVAILABLE {
-            setupManufactureDataLabelPresentation(cell, cellViewModel: cellViewModel)
-            cell.manufacturerData.text = cellViewModel.manufacturerData.rawStringFormat
-        } else {
-            cell.manufacturerData.text = cellViewModel.manufacturerData.rawStringFormat
-        }
-        if format.chosenFormatServiceData == AdvertisementDataForm.eddystone {
-            setupServiceDataLabelPresentation(cell, cellViewModel: cellViewModel)
-            cell.serviceData.text = cellViewModel.serviceData.eddystoneFormatedString
-        } else if format.chosenFormatServiceData == AdvertisementDataForm.serviceDataBytes {
-            setupServiceDataLabelPresentation(cell, cellViewModel: cellViewModel)
-            cell.serviceData.text = cellViewModel.serviceData.rawStringFormat
-        } else if cellViewModel.serviceData.eddystoneFormatedString != Symbols.NOT_AVAILABLE {
-            setupServiceDataLabelPresentation(cell, cellViewModel: cellViewModel)
-            cell.serviceData.text = cellViewModel.serviceData.rawStringFormat
-        } else {
-            cell.serviceData.text = cellViewModel.serviceData.rawStringFormat
+    }
+    
+    private func updateServiceDataField(_ cell: DeviceTableViewCell, forCell viewModel: ScanningDevicePageCellViewModel) {
+        guard let cache = self.userChoices[viewModel.deviceID] else { return }
+        switch cache.chosenFormatServiceData {
+            case .eddystone:
+                cell.serviceData.text = viewModel.serviceData.eddystoneFormatedString
+            case .serviceDataBytes:
+                cell.serviceData.text = viewModel.serviceData.rawStringFormat
+            default:
+                cell.serviceData.text = viewModel.serviceData.rawStringFormat
         }
     }
     
@@ -628,7 +678,8 @@ class ScanningDevicePageViewController: UIViewController, UINavigationController
         cell.IconBackground.layer.cornerRadius = 20
         cell.IconMiddleBackground.layer.cornerRadius = 20
         cell.IconMiddleBackground.alpha = alphaMiddleLayer
-        cell.icon.layer.cornerRadius = 12
+        cell.IconMiddleBackground.clipsToBounds = true
+        cell.IconBackground.clipsToBounds = true
     }
     
     fileprivate func setupManufactureDataLabelPresentation(_ cell: DeviceTableViewCell, cellViewModel: ScanningDevicePageCellViewModel) {
@@ -656,12 +707,13 @@ class ScanningDevicePageViewController: UIViewController, UINavigationController
     }
     //ENDMARK
     
-    fileprivate func showHideConnectButton(_ cell: DeviceTableViewCell, isConnectable: Bool?) {
+    fileprivate func showHideConnectButton(_ cell: DeviceTableViewCell, isConnectable: Bool?, indexPath: IndexPath) {
         if let result = isConnectable , result == true {
             cell.isConnectable.text = self.scanningDevicePageViewModel.CONNECTABLE
             cell.ConnectPeripheralButton.isHidden = false
             cell.ConnectPeripheralButton.layer.cornerRadius = 0.05*cell.ConnectPeripheralButton.bounds.size.width
             cell.ConnectPeripheralButton.clipsToBounds = true
+            cell.ConnectPeripheralButton.tag = indexPath.row
         }
         else if let result = isConnectable , result == false {
             cell.isConnectable.text = self.scanningDevicePageViewModel.NON_CONNECTABLE
@@ -732,8 +784,7 @@ class ScanningDevicePageViewController: UIViewController, UINavigationController
             }
             RotateDropDownFilterButtonIcon(180 * CGFloat(Double.pi) * 180)
             HideFilters(true)
-        } else
-        {
+        } else {
             self.NameFilterTextField.becomeFirstResponder()
             if AppInfo.deviceModel == .phone {
                 FilerViewHeight.constant = self.scanningDevicePageViewModel.filterViewExpaned
@@ -778,31 +829,11 @@ class ScanningDevicePageViewController: UIViewController, UINavigationController
     
     @IBAction func showFavouriteButtonPressed(_ sender: UIButton) {
         let showingFav = self.FavouriteFilterButton.tag != 0 ? true : false
-        if  !showingFav {
-            let image = UIImage(named: "ic_radio_button_checked_blue") as UIImage?
-            self.FavouriteFilterButton.setImage(image, for: UIControlState())
-            self.FavouriteFilterButton.tag = 1
-            
-        } else {
-            uncheckFavouriteButton ()
-        }
+        setFavouriteButton(isFavourite: !showingFav)
     }
     
-    fileprivate func uncheckFavouriteButton () {
-        let image = UIImage(named: "ic_radio_button_unchecked_blue") as UIImage?
-        self.FavouriteFilterButton.setImage(image, for: UIControlState())
-        self.FavouriteFilterButton.tag = 0
-    }
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        let nameFilter = (self.NameFilterTextField.text)?.trimmingCharacters(in: CharacterSet.whitespaces)
-        let deviceTypeFilter = self.RawDataFilterTextField.text
-        let rssiFilter = getRssiValue()
-        self.scanningDevicePageViewModel.setNewDeviceFilter()
+    private func setFavouriteFilter() {
         self.scanningDevicePageViewModel.filterSettings.showOnlyFavourite = self.FavouriteFilterButton.tag != 0 ? true : false
-        self.scanningDevicePageViewModel.filterSettings.nameFilter = nameFilter!
-        self.scanningDevicePageViewModel.filterSettings.deviceTypeFilter = DeviceTypeFilterEnum.getDeviceType(deviceTypeFilter!)
-        self.scanningDevicePageViewModel.filterSettings.rssi = Float(rssiFilter)
         if self.scanningDevicePageViewModel.filterSettings.showOnlyFavourite {
             for (key, value) in self.userChoices {
                 if value.isFavourite {
@@ -810,13 +841,46 @@ class ScanningDevicePageViewController: UIViewController, UINavigationController
                 }
             }
         }
-        showChosenFilter()
-        if scanningDevicePageViewModel.shouldFilterStaticPage() { updateDeviceTableView() }
-        else {
-            // will be handeled by the scanner
+    }
+    
+    fileprivate func setFavouriteButton(isFavourite: Bool) {
+        if isFavourite {
+            let image = UIImage(named: "ic_radio_button_checked_blue") as UIImage?
+            self.FavouriteFilterButton.setImage(image, for: UIControlState())
+            self.FavouriteFilterButton.tag = 1
+        } else {
+            let image = UIImage(named: "ic_radio_button_unchecked_blue") as UIImage?
+            self.FavouriteFilterButton.setImage(image, for: UIControlState())
+            self.FavouriteFilterButton.tag = 0
         }
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        let nameFilter = (self.NameFilterTextField.text)?.trimmingCharacters(in: CharacterSet.whitespaces)
+        let deviceTypeFilter = self.RawDataFilterTextField.text
+        let rssiFilter = getRssiValue()
+        self.scanningDevicePageViewModel.setNewDeviceFilter()
+        self.scanningDevicePageViewModel.filterSettings.nameFilter = nameFilter!
+        self.scanningDevicePageViewModel.filterSettings.deviceTypeFilter = DeviceTypeFilterEnum.getDeviceType(deviceTypeFilter!)
+        self.scanningDevicePageViewModel.filterSettings.rssi = Float(rssiFilter)
+        setFavouriteFilter()
+        guard validateFilter() else { return false }
+        CleanTableViewForFilter()
         resetFilterViewHeight()
         return true
+    }
+    
+    private func CleanTableViewForFilter() {
+        stopDeviceUpdateTimer()
+        self.scanningDevicePageViewModel.clearDataSource()
+        if self.scanningDevicePageViewModel.didDataSourceChanged {
+            self.deviceTableView.reloadData()
+            self.scanningDevicePageViewModel.didDataSourceChanged = !self.scanningDevicePageViewModel.didDataSourceChanged
+        }
+        updateDeviceTableView()
+        if self.scanningDevicePageViewModel.scanButtonStatus == .scanning {
+            fireDeviceUpdateTimer()
+        }
     }
     
     @IBAction func NameFilterTextFieldClearButtonPressed(_ sender: UIButton) {
@@ -834,13 +898,14 @@ class ScanningDevicePageViewController: UIViewController, UINavigationController
         return true
     }
     
-    func showChosenFilter() {
-        guard self.scanningDevicePageViewModel.isFilterValidated() else {
+    func validateFilter() -> Bool {
+        guard self.scanningDevicePageViewModel.isFilterValidate() else {
             FilterLabel.text = self.scanningDevicePageViewModel.filterSettings.NO_FILTER
-            return
+            return false
         }
         FilterLabel.text = self.scanningDevicePageViewModel.filterSettings.description()
         self.FilterClearButtonWidth.constant = 44
+        return true
     }
     
     @IBAction func FilterClearButtonPressed(_ sender: UIButton) {
@@ -851,37 +916,33 @@ class ScanningDevicePageViewController: UIViewController, UINavigationController
         NameFilterTextField.text = defaultValues.nameFilter
         RawDataFilterTextField.text = defaultValues.deviceTypeFilter.description()
         RSSIFilterSlider.value = defaultValues.rssi
-        uncheckFavouriteButton()
         RSSIFilterSliderValue.text = defaultValues.rssiString()
-        if scanningDevicePageViewModel.shouldFilterStaticPage() {
-            updateDeviceTableView()
-        }
+       CleanTableViewForFilter()
     }
     
     @IBAction func FavouriteButtonPressed(_ sender: UIButton) {
-        let indexOfSelectedRow = sender.tag
-        let cellView = findCellInView(indexOfSelectedRow)
-
-        let cellViewModel = self.scanningDevicePageViewModel.deviceTableCellViewModelList[indexOfSelectedRow]
-        if let item = self.userChoices[cellViewModel.deviceID] {
-            if item.isFavourite {
-                setIconFavouriteConstrains(cellView!, shouldHide: true)
-                //In this case the view is in filter mode and user want to remove any of the favourited device, we need update filter
-                self.scanningDevicePageViewModel.removeFromFavouriteList(cellViewModel.deviceID)
-            } else {
-                setIconFavouriteConstrains(cellView!, shouldHide: false)
-            }
-            item.isFavourite = !item.isFavourite
-        } else {
-            let choice = UserChoiceOnDevice()
-            choice.atRow = indexOfSelectedRow
+        guard sender.tag < self.scanningDevicePageViewModel.deviceTableCellViewModelList.count else { return }
+        let indexOfSelectedRow = getIndexPath(sender.tag)
+        let cellView = findCellInView(indexOfSelectedRow.row)
+        let cellViewModel = self.scanningDevicePageViewModel.deviceTableCellViewModelList[indexOfSelectedRow.row]
+        guard let item = self.userChoices[cellViewModel.deviceID] else {
+            let choice = UserChoiceOnDevice(indexOfSelectedRow)
             choice.isFavourite = true
             setIconFavouriteConstrains(cellView!, shouldHide: false)
             self.userChoices[cellViewModel.deviceID] = choice
+            return
         }
-        if scanningDevicePageViewModel.shouldFilterStaticPage() {
-            updateDeviceTableView()
+        if item.isFavourite {
+            setIconFavouriteConstrains(cellView!, shouldHide: true)
+            //In this case the view is in filter mode and user want to remove any of the favourited device, we need update filter
+            if self.scanningDevicePageViewModel.removeFavroutiteDeviceFromFilterList(cellViewModel.deviceID) {
+                reloadRowAt(indexOfSelectedRow.row)
+            }
+        } else {
+            setIconFavouriteConstrains(cellView!, shouldHide: false)
+            //reset cached height for the row
         }
+        item.isFavourite = !item.isFavourite
     }
     
     fileprivate func findCellInView(_ indexOfSelectedRow: Int) -> DeviceTableViewCell! {
@@ -907,11 +968,11 @@ class ScanningDevicePageViewController: UIViewController, UINavigationController
             }
         } else {
             if AppInfo.deviceModel == .phone {
-                cellView.IconFavouriteTopIconBackgroundBottomConstrain.constant = -3
-                cellView.IconFavouriteHeight.constant = 15
+                cellView.IconFavouriteTopIconBackgroundBottomConstrain.constant = -1
+                cellView.IconFavouriteHeight.constant = 11
             } else if AppInfo.deviceModel == .pad {
-                cellView.iPadIconFavouriteTopIconBackgroundBottomConstrain.constant = -3
-                cellView.iPadIconFavouriteHeight.constant = 15
+                cellView.iPadIconFavouriteTopIconBackgroundBottomConstrain.constant = -1
+                cellView.iPadIconFavouriteHeight.constant = 11
             }
         }
     }

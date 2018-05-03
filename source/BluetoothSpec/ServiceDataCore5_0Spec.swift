@@ -19,4 +19,14 @@ struct ServiceDataCore5_0Spec {
         self.uuid = uuid
         self.data = data
     }
+    
+    func description() -> String {
+        var datString = ""
+        if let dat = data {
+            datString = DataConvertHelper.getNSData(dat)
+            return "UUID: " + uuid.uuidString + Symbols.whiteSpace + "Data: " + datString
+        } else {
+            return "UUID: " + uuid.uuidString
+        }
+    }
 }

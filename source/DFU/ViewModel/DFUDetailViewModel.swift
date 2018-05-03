@@ -121,6 +121,7 @@ class DFUDetailViewModel: DFUViewModelBase {
         initiator.logger = self
         initiator.delegate = self
         initiator.progressDelegate = self
+        initiator.enableUnsafeExperimentalButtonlessServiceInSecureDfu = true
         initiator.alternativeAdvertisingNameEnabled = UserPreference.instance.enableAlternativeName
         dfuServiceController = initiator.with(firmware: firmware).start()
     }

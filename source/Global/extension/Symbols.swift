@@ -27,4 +27,5 @@ open class Symbols
     static let newRow = "\n"
     static let checkMark = "\u{2714}"
     static let whiteBullet = "\u{25E6}"
+    static let figureDash = "\u{2010}"
 }

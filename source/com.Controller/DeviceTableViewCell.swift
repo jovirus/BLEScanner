@@ -45,6 +45,8 @@ class DeviceTableViewCell: UITableViewCell {
     @IBOutlet weak var serviceData: UILabel!
     @IBOutlet weak var OverflowServiceUUID: UILabel!
     @IBOutlet weak var DetailViewHeight: NSLayoutConstraint!
+    
+    
 
     //MARK: - Detail - label
     @IBOutlet weak var CompleteLocalNameLabel: UILabel!
@@ -54,10 +56,13 @@ class DeviceTableViewCell: UITableViewCell {
     @IBOutlet weak var ServiceUUIDLabel: UILabel!
     @IBOutlet weak var ServiceDataLabel: UILabel!
     @IBOutlet weak var OverflowServiceUUIDLabel: UILabel!
+    @IBOutlet weak var NoDataWarningLabel: UILabel!
+    @IBOutlet weak var PlaceholderView: UIView!
     
     var deviceID: String?
-    static let ManufacturerDataButtonRestorationKey = "Manufacturer Data"
-    static let ServiceDataButtonRestorationKey = "Service Data"
+    var indexPath: IndexPath!
+    static let ManufacturerDataButtonRestorationKey = "Manufacturer Data: "
+    static let ServiceDataButtonRestorationKey = "Service Data: "
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -66,16 +71,16 @@ class DeviceTableViewCell: UITableViewCell {
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
         // Configure the view for the selected state
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
     }
     
     @IBAction func FavouriteButtonPressed(_ sender: AnyObject) {
     }
     
-    
     @IBAction func ConnectPeripheralButtonPressed(_ sender: UIButton) {
-        
     }
-    
 }

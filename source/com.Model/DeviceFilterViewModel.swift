@@ -73,7 +73,7 @@ internal struct DeviceFilterViewModel {
         return self.filtersTextDescription
     }
     
-    func isFilterOn() -> Bool{
+    func isFilterOn() -> Bool {
         return self.advFilters.count > 0
     }
     

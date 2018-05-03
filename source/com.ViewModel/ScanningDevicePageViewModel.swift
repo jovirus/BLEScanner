@@ -73,7 +73,7 @@ extension ScanningDevicePageViewModel {
 open class ScanningDevicePageViewModel: ViewModelBase {
     var deviceTableCellViewModelList: [ScanningDevicePageCellViewModel] = []
     fileprivate var advertisingDevices: [ScanningDevicePageCellViewModel] = []
-    fileprivate var scanningDeviceModel = ScanningDevicePageModel.instance
+    fileprivate(set) var scanningDeviceModel = ScanningDevicePageModel.instance
     
     var scanningPageUpdatedDelegate: ScanningPageUpdatedDelegate!
     var scanningPageStatusDelegate: ScanButtonSuspendedDelegate!
@@ -88,18 +88,19 @@ open class ScanningDevicePageViewModel: ViewModelBase {
     let CONNECTABLE = DeviceConnectionType.connectable.description()
     let NON_CONNECTABLE = DeviceConnectionType.non_connectable.description()
         
-    let maxHeight = CGFloat(320)
-    let minHeight = CGFloat(80)
+    let maxHeight = CGFloat(200)
+    let defaulHeight = CGFloat(80)
+    let miniHeight = CGFloat(0)
     
     var filterViewExpaned: CGFloat = 220
     var filterViewLimited: CGFloat = 49
     
-    let timeToRenderTheDeviceTableSecond = TimeInterval(0.8)
+    let timeToRenderTheDeviceTableSecond = TimeInterval(1.2)
     fileprivate(set) var isOnDragging = false
     fileprivate(set) var isOnDecelerating = false
+    var didDataSourceChanged = false
     var filterSettings = DeviceFilterViewModel()
     
-    //static var instance = ScanningDevicePageViewModel()
     override init() {
         super.init()
         BLEDeviceManager.instance().registerDelegate(String(describing: ScanningDevicePageViewModel.self), receiver: self)
@@ -162,37 +163,45 @@ open class ScanningDevicePageViewModel: ViewModelBase {
         return self.scanButtonStatus
     }
     
+    /**
+        return bool. Indicate whether need to reload the tableview
+     */
     func BuildDeviceTableCellViewModel() {
-        if self.scanningDeviceModel.isOnFilterModel {
-            self.deviceTableCellViewModelList.removeAll()
-            for item in self.advertisingDevices
-            {
-                var copyCellVM: ScanningDevicePageCellViewModel!
-                copyCellVM = item
-                if self.scanningDeviceModel.shouldShowDeviceForFilter(self.filterSettings, device: copyCellVM) {
-                    self.deviceTableCellViewModelList.append(copyCellVM)
-                } else {
-                    //ignor
-                }
+        validateInterval()
+        self.updateDeviceTableCellViewModelList(shouldApplyFilter: self.scanningDeviceModel.isOnFilterMode)
+    }
+    
+    /**
+        If device have not been updated more than 6 sec, if will be considered out of range
+        ref: https://developer.apple.com/library/content/qa/qa1931/_index.html
+     */
+    private func validateInterval() {
+        for item in self.advertisingDevices {
+            if Date().timeIntervalSince(item.bleDevice.createdAt) > 6 {
+                item.isDeviceOutOfRange = true
             }
-        }
-        else {
-            self.updateDeviceTableCellViewModelList()
         }
     }
     
-    private func updateDeviceTableCellViewModelList() {
+    private func updateDeviceTableCellViewModelList(shouldApplyFilter: Bool) {
         for item in self.advertisingDevices {
-            guard !item.isDeviceOutOfRange else {
-                continue
-            }
-            guard let index = self.deviceTableCellViewModelList.index(where: { (uiDevice) -> Bool in
-                uiDevice.deviceID == item.deviceID
-            }) else {
+            let isSatisfied = self.scanningDeviceModel.isDeviceSatisfiedForFilter(self.filterSettings, device: item)
+            if shouldApplyFilter, isSatisfied, let index = self.deviceTableCellViewModelList.index(where: {$0.deviceID == item.deviceID}) {
+                self.deviceTableCellViewModelList[index] = item
+            } else if !shouldApplyFilter, let index = self.deviceTableCellViewModelList.index(where: {$0.deviceID == item.deviceID})  {
+                self.deviceTableCellViewModelList[index] = item
+            } else if shouldApplyFilter && isSatisfied {
                 self.deviceTableCellViewModelList.append(item)
-                continue
+            } else if !shouldApplyFilter {
+                self.deviceTableCellViewModelList.append(item)
             }
-            self.deviceTableCellViewModelList[index] = item
+        }
+        if shouldApplyFilter {
+            for item in self.deviceTableCellViewModelList {
+                item.isSatisfiedForFilter = self.scanningDeviceModel.isDeviceSatisfiedForFilter(self.filterSettings, device: item)
+            }
+        } else {
+            self.deviceTableCellViewModelList.forEach({ $0.isSatisfiedForFilter = true })
         }
     }
     
@@ -205,28 +214,26 @@ open class ScanningDevicePageViewModel: ViewModelBase {
     }
     
     //MARK: - UI update, when fresh on UI
-    func freshLocalList()
-    {
+    func clearDataSource() {
         self.deviceTableCellViewModelList.removeAll()
-        //when is on scanning, all non detected advertiser should be removed
-        if self.scanButtonStatus == .scanning {
-            for index in 0..<self.advertisingDevices.count {
-                guard self.advertisingDevices[index].isValidatedInterval else {
-                    self.advertisingDevices[index].isDeviceOutOfRange = true
-                    continue
-                }
-            }
-        }
-        //self.deviceColor.removeAll()
-        //UIHelper.resetColorCounter()
+        self.advertisingDevices.forEach({ $0.isPushedToView = false })
+        self.didDataSourceChanged = true
+    }
+    
+    func freshLocalList() {
+        self.advertisingDevices.removeAll()
+        self.deviceTableCellViewModelList.removeAll()
+        self.didDataSourceChanged = true
         scanningPageUpdatedDelegate?.didRefreshScanningPage(true)
     }
     
     // when clear all filter on UI
     func turnOffDeviceFilters() {
+        guard self.scanningDeviceModel.isOnFilterMode else { return }
         self.filterSettings.clearFilter()
         self.scanningDeviceModel.clearFilteredDevice()
-        scanningDeviceModel.isOnFilterModel = false
+        scanningDeviceModel.isOnFilterMode = false
+        self.didDataSourceChanged = true
     }
     
     //When user change filter criterias
@@ -236,13 +243,13 @@ open class ScanningDevicePageViewModel: ViewModelBase {
     }
     
     //before filter label display
-    func isFilterValidated() -> Bool{
+    func isFilterValidate() -> Bool {
         if self.filterSettings.isFilterOn() {
-            scanningDeviceModel.isOnFilterModel = true
+            scanningDeviceModel.isOnFilterMode = true
         } else {
-            scanningDeviceModel.isOnFilterModel = false
+            scanningDeviceModel.isOnFilterMode = false
         }
-        return scanningDeviceModel.isOnFilterModel
+        return scanningDeviceModel.isOnFilterMode
     }
     
     func resetDeviceNameFilter() {
@@ -250,19 +257,15 @@ open class ScanningDevicePageViewModel: ViewModelBase {
     }
     
     //When user update the favourite list at runtime
-    func removeFromFavouriteList(_ deviceID: String) {
-        if scanningDeviceModel.isOnFilterModel && self.filterSettings.showOnlyFavourite && self.filterSettings.favourite.contains(deviceID)
-        {
-            self.filterSettings.removeFromFavourite(deviceID)
-            self.scanningDeviceModel.removeFromFilter(deviceID)
+    func removeFavroutiteDeviceFromFilterList(_ deviceID: String) -> Bool {
+        guard scanningDeviceModel.isOnFilterMode && self.filterSettings.showOnlyFavourite && self.filterSettings.favourite.contains(deviceID), let index = self.deviceTableCellViewModelList.index(where: { $0.deviceID == deviceID }) else {
+            return false
         }
+        self.filterSettings.removeFromFavourite(deviceID)
+        self.scanningDeviceModel.removeFromFilter(deviceID)
+        self.deviceTableCellViewModelList[index].isSatisfiedForFilter = false
+        return true
     }
-    
-//    //reset filter label
-//    func resetFilterLabel() -> String {
-//        self.filterSettings.resetFilterStringText()
-//        return filterSettings.filtersTextDescription
-//    }
     
     func createSession() -> BLESession {
        return scanningDeviceModel.createSession(deviceID: selectedCellVM.deviceID, deviceName: selectedCellVM.deviceName, peripheralConnectionStatus: selectedCellVM.bleDevice.connectionStatus)

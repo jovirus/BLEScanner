@@ -13,7 +13,7 @@ open class CellViewModelBase: GenericViewModel {
     var cellIndex: Int?
     var Name: String = ""
     var Value: String = ""
-    var hasBeenInitialized: Bool = false
+    var isPushedToView: Bool = false
     
     func AssignCellIndex(_ index: Int) {
         self.cellIndex = index

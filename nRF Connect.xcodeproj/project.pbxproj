@@ -93,7 +93,7 @@
 		300738502018AD780051EB42 /* ZipFilesTableCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300738122018AD780051EB42 /* ZipFilesTableCellViewModel.swift */; };
 		300738512018AD780051EB42 /* ZipFilesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 300738132018AD780051EB42 /* ZipFilesViewModel.swift */; };
 		3035ADE81CCA040A0064FE14 /* ScannerNavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3035ADE71CCA040A0064FE14 /* ScannerNavigationViewController.swift */; };
-		65B8E3C5DE057A8782FB020E /* Pods_Qiduo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A0E3D3CA3990E584DA077CC2 /* Pods_Qiduo.framework */; };
+		7EE98595EDA9C58C5C654776 /* Pods_nRF_Connect.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD68DD64E2AD11FDE0A5A63B /* Pods_nRF_Connect.framework */; };
 		870004DF1C93149F007E13CF /* CheckBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 870004DE1C93149F007E13CF /* CheckBox.swift */; };
 		870004E11C93208D007E13CF /* ChangeDataViewPopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 870004E01C93208D007E13CF /* ChangeDataViewPopoverViewController.swift */; };
 		87001B421F3CA5FE009B183E /* ConfigurationServiceUUIDCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87001B411F3CA5FE009B183E /* ConfigurationServiceUUIDCell.swift */; };
@@ -256,6 +256,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		17607F3A89C66982FFF90112 /* Pods-nRF Connect.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-nRF Connect.release.xcconfig"; path = "Pods/Target Support Files/Pods-nRF Connect/Pods-nRF Connect.release.xcconfig"; sourceTree = "<group>"; };
 		300737A02018ACEC0051EB42 /* AppConnectionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppConnectionManager.swift; sourceTree = "<group>"; };
 		300737A12018ACEC0051EB42 /* AppInitializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppInitializer.swift; sourceTree = "<group>"; };
 		300737A22018ACEC0051EB42 /* LocalAccessManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalAccessManager.swift; sourceTree = "<group>"; };
@@ -342,8 +343,6 @@
 		300738122018AD780051EB42 /* ZipFilesTableCellViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZipFilesTableCellViewModel.swift; sourceTree = "<group>"; };
 		300738132018AD780051EB42 /* ZipFilesViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZipFilesViewModel.swift; sourceTree = "<group>"; };
 		3035ADE71CCA040A0064FE14 /* ScannerNavigationViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScannerNavigationViewController.swift; sourceTree = "<group>"; };
-		72B05350A8248C2D6CE2E3D6 /* Pods-Qiduo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Qiduo.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Qiduo/Pods-Qiduo.debug.xcconfig"; sourceTree = "<group>"; };
-		74E2D077555D5CAB8814931F /* Pods_nRF_ConnectTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_nRF_ConnectTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		870004DE1C93149F007E13CF /* CheckBox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CheckBox.swift; sourceTree = "<group>"; };
 		870004E01C93208D007E13CF /* ChangeDataViewPopoverViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChangeDataViewPopoverViewController.swift; sourceTree = "<group>"; };
 		87001B411F3CA5FE009B183E /* ConfigurationServiceUUIDCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConfigurationServiceUUIDCell.swift; sourceTree = "<group>"; };
@@ -464,7 +463,7 @@
 		87D8FFFF1F66A24D00841A2C /* SettingAdvertiserViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingAdvertiserViewController.swift; sourceTree = "<group>"; };
 		87DE5CDC1D901450007F2E13 /* DeviceType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DeviceType.swift; path = source/com.Model/DeviceType.swift; sourceTree = SOURCE_ROOT; };
 		87E1AD221D787023000A3B6C /* DeviceFilterViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DeviceFilterViewModel.swift; path = source/com.Model/DeviceFilterViewModel.swift; sourceTree = SOURCE_ROOT; };
-		87E74A461B32F71F0029D32E /* Qiduo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Qiduo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		87E74A461B32F71F0029D32E /* nRF Connect.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "nRF Connect.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		87E74A4B1B32F71F0029D32E /* ScanningDevicePageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanningDevicePageViewController.swift; sourceTree = "<group>"; };
 		87E74A4E1B32F71F0029D32E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		87E74A531B32F71F0029D32E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = source/Assets.xcassets; sourceTree = "<group>"; };
@@ -492,9 +491,8 @@
 		87FE86AF1BE8C8A8000A9270 /* ScanningDevicePageViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanningDevicePageViewModel.swift; sourceTree = "<group>"; };
 		87FFE6FA1B6A4FD70012DA09 /* BLEAdertisementPackageHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BLEAdertisementPackageHandler.swift; sourceTree = "<group>"; };
 		87FFE6FC1B6F67F20012DA09 /* AdertisementPackageWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AdertisementPackageWrapper.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
-		A0E3D3CA3990E584DA077CC2 /* Pods_Qiduo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Qiduo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		CB087B55D51F3F10D1485B53 /* Pods_nRF_Connect.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_nRF_Connect.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		DB3E020C8D8D599FF287DAC3 /* Pods-Qiduo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Qiduo.release.xcconfig"; path = "Pods/Target Support Files/Pods-Qiduo/Pods-Qiduo.release.xcconfig"; sourceTree = "<group>"; };
+		DD68DD64E2AD11FDE0A5A63B /* Pods_nRF_Connect.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_nRF_Connect.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F0F58BBE5624E3254E57C5F0 /* Pods-nRF Connect.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-nRF Connect.debug.xcconfig"; path = "Pods/Target Support Files/Pods-nRF Connect/Pods-nRF Connect.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -505,7 +503,7 @@
 				8733E33D1C5B69C500BF64FA /* SystemConfiguration.framework in Frameworks */,
 				8733E33B1C5B69BC00BF64FA /* libz.tbd in Frameworks */,
 				8733E3391C5B69AD00BF64FA /* libc++.tbd in Frameworks */,
-				65B8E3C5DE057A8782FB020E /* Pods_Qiduo.framework in Frameworks */,
+				7EE98595EDA9C58C5C654776 /* Pods_nRF_Connect.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -957,14 +955,14 @@
 				87E74A531B32F71F0029D32E /* Assets.xcassets */,
 				87E74A581B32F71F0029D32E /* Info.plist */,
 				878BD9BD1B58FBAE003D54D9 /* AppleDelegate.swift */,
-				FA18F185C38C872560CE18CB /* Pods */,
+				B849B3674DA9C9F35DBC5C80 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
 		87E74A471B32F71F0029D32E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				87E74A461B32F71F0029D32E /* Qiduo.app */,
+				87E74A461B32F71F0029D32E /* nRF Connect.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -975,9 +973,7 @@
 				8733E33C1C5B69C500BF64FA /* SystemConfiguration.framework */,
 				8733E33A1C5B69BC00BF64FA /* libz.tbd */,
 				8733E3381C5B69AD00BF64FA /* libc++.tbd */,
-				CB087B55D51F3F10D1485B53 /* Pods_nRF_Connect.framework */,
-				74E2D077555D5CAB8814931F /* Pods_nRF_ConnectTests.framework */,
-				A0E3D3CA3990E584DA077CC2 /* Pods_Qiduo.framework */,
+				DD68DD64E2AD11FDE0A5A63B /* Pods_nRF_Connect.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1056,11 +1052,11 @@
 			path = Logger;
 			sourceTree = "<group>";
 		};
-		FA18F185C38C872560CE18CB /* Pods */ = {
+		B849B3674DA9C9F35DBC5C80 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				72B05350A8248C2D6CE2E3D6 /* Pods-Qiduo.debug.xcconfig */,
-				DB3E020C8D8D599FF287DAC3 /* Pods-Qiduo.release.xcconfig */,
+				F0F58BBE5624E3254E57C5F0 /* Pods-nRF Connect.debug.xcconfig */,
+				17607F3A89C66982FFF90112 /* Pods-nRF Connect.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -1068,25 +1064,25 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		87E74A451B32F71F0029D32E /* Qiduo */ = {
+		87E74A451B32F71F0029D32E /* nRF Connect */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 87E74A711B32F71F0029D32E /* Build configuration list for PBXNativeTarget "Qiduo" */;
+			buildConfigurationList = 87E74A711B32F71F0029D32E /* Build configuration list for PBXNativeTarget "nRF Connect" */;
 			buildPhases = (
-				1603DF864A7C2E4DD0F9F352 /* [CP] Check Pods Manifest.lock */,
+				87C83252EAE4F9DE6176E0AD /* [CP] Check Pods Manifest.lock */,
 				87E74A421B32F71F0029D32E /* Sources */,
 				87E74A431B32F71F0029D32E /* Frameworks */,
 				87E74A441B32F71F0029D32E /* Resources */,
 				871BB6821D1011680018A34A /* Embed Frameworks */,
-				A52321F5BF0B7A8717CA5CDB /* [CP] Embed Pods Frameworks */,
-				5ED282CDDF34B120AAA5BF47 /* [CP] Copy Pods Resources */,
+				C95DE5357A76EDEE70B47F47 /* [CP] Embed Pods Frameworks */,
+				6690E37E97DCFA6DB406F611 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = Qiduo;
+			name = "nRF Connect";
 			productName = FIrstAppleProject;
-			productReference = 87E74A461B32F71F0029D32E /* Qiduo.app */;
+			productReference = 87E74A461B32F71F0029D32E /* nRF Connect.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -1096,7 +1092,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 0810;
+				LastUpgradeCheck = 0920;
 				ORGANIZATIONNAME = "Nordic Semiconductor";
 				TargetAttributes = {
 					87E74A451B32F71F0029D32E = {
@@ -1112,7 +1108,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 87E74A411B32F71F0029D32E /* Build configuration list for PBXProject "Qiduo" */;
+			buildConfigurationList = 87E74A411B32F71F0029D32E /* Build configuration list for PBXProject "nRF Connect" */;
 			compatibilityVersion = "Xcode 6.3";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -1125,7 +1121,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				87E74A451B32F71F0029D32E /* Qiduo */,
+				87E74A451B32F71F0029D32E /* nRF Connect */,
 			);
 		};
 /* End PBXProject section */
@@ -1146,25 +1142,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		1603DF864A7C2E4DD0F9F352 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-Qiduo-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		5ED282CDDF34B120AAA5BF47 /* [CP] Copy Pods Resources */ = {
+		6690E37E97DCFA6DB406F611 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1176,16 +1154,34 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Qiduo/Pods-Qiduo-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-nRF Connect/Pods-nRF Connect-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		A52321F5BF0B7A8717CA5CDB /* [CP] Embed Pods Frameworks */ = {
+		87C83252EAE4F9DE6176E0AD /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-Qiduo/Pods-Qiduo-frameworks.sh",
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-nRF Connect-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		C95DE5357A76EDEE70B47F47 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-nRF Connect/Pods-nRF Connect-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Charts/Charts.framework",
 				"${BUILT_PRODUCTS_DIR}/EVReflection/EVReflection.framework",
 				"${BUILT_PRODUCTS_DIR}/SWRevealViewController/SWRevealViewController.framework",
@@ -1202,7 +1198,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Qiduo/Pods-Qiduo-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-nRF Connect/Pods-nRF Connect-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -1463,14 +1459,20 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -1515,14 +1517,20 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -1554,13 +1562,12 @@
 		};
 		87E74A721B32F71F0029D32E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 72B05350A8248C2D6CE2E3D6 /* Pods-Qiduo.debug.xcconfig */;
+			baseConfigurationReference = F0F58BBE5624E3254E57C5F0 /* Pods-nRF Connect.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = CT959WGKB3;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1573,7 +1580,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.qiu.qiduo;
-				PRODUCT_NAME = Qiduo;
+				PRODUCT_NAME = "nRF Connect";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
@@ -1586,13 +1593,12 @@
 		};
 		87E74A731B32F71F0029D32E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DB3E020C8D8D599FF287DAC3 /* Pods-Qiduo.release.xcconfig */;
+			baseConfigurationReference = 17607F3A89C66982FFF90112 /* Pods-nRF Connect.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = CT959WGKB3;
 				ENABLE_TESTABILITY = YES;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -1605,7 +1611,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.qiu.qiduo;
-				PRODUCT_NAME = Qiduo;
+				PRODUCT_NAME = "nRF Connect";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
@@ -1619,7 +1625,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		87E74A411B32F71F0029D32E /* Build configuration list for PBXProject "Qiduo" */ = {
+		87E74A411B32F71F0029D32E /* Build configuration list for PBXProject "nRF Connect" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				87E74A6F1B32F71F0029D32E /* Debug */,
@@ -1628,7 +1634,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		87E74A711B32F71F0029D32E /* Build configuration list for PBXNativeTarget "Qiduo" */ = {
+		87E74A711B32F71F0029D32E /* Build configuration list for PBXNativeTarget "nRF Connect" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				87E74A721B32F71F0029D32E /* Debug */,

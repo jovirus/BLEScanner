@@ -91,12 +91,12 @@ extension RSSIChartViewModel: RSSIChartModelDelegate {
     }
     
     fileprivate func tryApplyFilter() {
-        if scanningDeviceModel.isOnFilterModel && self.scanningDeviceModel.getFilteredDevice().count == 0
+        if scanningDeviceModel.isOnFilterMode && self.scanningDeviceModel.getFilteredDevice().count == 0
         {
             self.averageValue.removeAll()
-        } else if !scanningDeviceModel.isOnFilterModel {
+        } else if !scanningDeviceModel.isOnFilterMode {
             return
-        } else if scanningDeviceModel.isOnFilterModel && scanningDeviceModel.getFilteredDevice().count != 0 {
+        } else if scanningDeviceModel.isOnFilterMode && scanningDeviceModel.getFilteredDevice().count != 0 {
             for id in self.averageValue.keys
             {
                 if !self.scanningDeviceModel.getFilteredDevice().contains(id)

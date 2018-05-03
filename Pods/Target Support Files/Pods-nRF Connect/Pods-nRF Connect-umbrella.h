@@ -11,6 +11,6 @@
 #endif
 
 
-FOUNDATION_EXPORT double Pods_QiduoVersionNumber;
-FOUNDATION_EXPORT const unsigned char Pods_QiduoVersionString[];
+FOUNDATION_EXPORT double Pods_nRF_ConnectVersionNumber;
+FOUNDATION_EXPORT const unsigned char Pods_nRF_ConnectVersionString[];
 

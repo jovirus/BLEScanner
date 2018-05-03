@@ -225,14 +225,14 @@ internal class DataConvertHelper {
         return keyValuePair;
     }
     
-    static func getServiceData(_ dictionary: NSDictionary) -> ServiceDataCore5_0Spec! {
-        var serviceDataSpec: ServiceDataCore5_0Spec!
+    static func getServiceData(_ dictionary: NSDictionary) -> [ServiceDataCore5_0Spec] {
+        var serviceDataSpec: [ServiceDataCore5_0Spec] = []
         for (key, value) in dictionary
         {
             guard type(of: key) is CBUUID.Type else { continue }
             let uuid = key as! CBUUID
             let serviceData = value as? Data
-            serviceDataSpec = ServiceDataCore5_0Spec(uuid: uuid, data: serviceData)
+            serviceDataSpec.append(ServiceDataCore5_0Spec(uuid: uuid, data: serviceData))
         }
         return serviceDataSpec
     }

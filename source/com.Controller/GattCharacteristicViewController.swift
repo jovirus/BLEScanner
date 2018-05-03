@@ -410,7 +410,7 @@ class GattCharacteristicViewController : UIViewController, UITableViewDelegate, 
         cell.CharacteristicName.text = cellViewModel.Name
         cell.CharacteristicUUID.text = cellViewModel.getUUID()!
         visibilityControlButtons(cell, cellVM: cellViewModel)
-        cellViewModel.hasBeenInitialized = true
+        cellViewModel.isPushedToView = true
         cell.CharacteristicProperty.text = cellViewModel.getPropertyDescription()
         cell.ReadCharacteristicButton.tag = row
         cell.WriteCharacteristicButton.tag = row

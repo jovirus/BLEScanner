@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
-    <device id="retina4_7" orientation="portrait">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
+    <device id="ipad10_5" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -20,14 +20,14 @@
                         <viewControllerLayoutGuide type="bottom" id="xb3-aO-Qok"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="834" height="1112"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="background_image" translatesAutoresizingMaskIntoConstraints="NO" id="kEa-Gf-s9r">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <rect key="frame" x="0.0" y="-24" width="834" height="1170"/>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="nordic_logo_verti" translatesAutoresizingMaskIntoConstraints="NO" id="S8h-6w-UR1">
-                                <rect key="frame" x="96" y="119.5" width="182" height="242"/>
+                                <rect key="frame" x="273.5" y="205" width="288" height="382"/>
                                 <constraints>
                                     <constraint firstAttribute="height" priority="750" constant="242" id="JZi-5t-E6a"/>
                                     <constraint firstAttribute="width" priority="750" constant="182" id="LLU-OP-OWT"/>
@@ -48,7 +48,7 @@
                                 </variation>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="background_title" translatesAutoresizingMaskIntoConstraints="NO" id="VhL-m3-SoG">
-                                <rect key="frame" x="142.5" y="639" width="90" height="20"/>
+                                <rect key="frame" x="372.5" y="1084" width="90" height="20"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="20" id="7fo-E3-PJr"/>
                                     <constraint firstAttribute="width" constant="90" id="ISx-9v-yFD"/>
@@ -57,12 +57,12 @@
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="kEa-Gf-s9r" secondAttribute="bottom" id="4W7-zU-sot"/>
+                            <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="kEa-Gf-s9r" secondAttribute="bottom" constant="-34" id="4W7-zU-sot"/>
                             <constraint firstItem="xb3-aO-Qok" firstAttribute="top" secondItem="VhL-m3-SoG" secondAttribute="bottom" constant="8" id="F8z-nu-Mgd"/>
                             <constraint firstItem="VhL-m3-SoG" firstAttribute="centerX" secondItem="kEa-Gf-s9r" secondAttribute="centerX" id="G42-q9-Ww9"/>
-                            <constraint firstItem="S8h-6w-UR1" firstAttribute="centerY" secondItem="kEa-Gf-s9r" secondAttribute="centerY" multiplier="0.7" constant="7.0500000000000114" id="Kaa-AR-K9f"/>
+                            <constraint firstItem="S8h-6w-UR1" firstAttribute="centerY" secondItem="kEa-Gf-s9r" secondAttribute="centerY" multiplier="0.7" constant="3.4666666666666401" id="Kaa-AR-K9f"/>
                             <constraint firstItem="kEa-Gf-s9r" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="topMargin" id="QCW-o3-KRn"/>
-                            <constraint firstItem="kEa-Gf-s9r" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="topMargin" constant="-20" id="X0V-J2-KDX"/>
+                            <constraint firstItem="kEa-Gf-s9r" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="topMargin" constant="-44" id="X0V-J2-KDX"/>
                             <constraint firstAttribute="trailing" secondItem="kEa-Gf-s9r" secondAttribute="trailing" id="i0M-wH-VoG"/>
                             <constraint firstAttribute="trailingMargin" secondItem="kEa-Gf-s9r" secondAttribute="trailing" id="qpG-gO-ABR"/>
                             <constraint firstItem="kEa-Gf-s9r" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="s3q-ec-e7e"/>
@@ -80,12 +80,12 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iYj-Kq-Ea1" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="52" y="374.66266866566718"/>
+            <point key="canvasLocation" x="52" y="374.6305418719212"/>
         </scene>
     </scenes>
     <resources>
         <image name="background_image" width="800" height="600"/>
         <image name="background_title" width="120" height="11"/>
-        <image name="nordic_logo_verti" width="181" height="241"/>
+        <image name="nordic_logo_verti" width="272" height="362"/>
     </resources>
 </document>

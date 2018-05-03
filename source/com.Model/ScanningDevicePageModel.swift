@@ -32,8 +32,7 @@ fileprivate func <= <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
 open class ScanningDevicePageModel {
     //static var instance = ScanningDevicePageModel()
     fileprivate var filteredList: [String] = []
-    var isOnFilterModel = false
-
+    var isOnFilterMode = false
 }
 
 extension ScanningDevicePageModel {
@@ -96,7 +95,7 @@ extension ScanningDevicePageModel {
         return shouldShowDevice
     }
     
-    func shouldShowDeviceForFilter (_ filters: DeviceFilterViewModel, device: ScanningDevicePageCellViewModel) -> Bool {
+    func isDeviceSatisfiedForFilter (_ filters: DeviceFilterViewModel, device: ScanningDevicePageCellViewModel) -> Bool {
         var satisfiedForFavouriteFilter = true
         if filters.showOnlyFavourite, !filters.favourite.contains(device.deviceID) { satisfiedForFavouriteFilter = false }
         guard satisfiedForFavouriteFilter, shouldShowDeviceForFilter2(filters, device: device) else { return false }
@@ -128,8 +127,7 @@ extension ScanningDevicePageModel {
     }
     
     fileprivate func addNewFilteredDevice(_ deviceID: String) {
-        if !self.filteredList.contains(deviceID)
-        {
+        if !self.filteredList.contains(deviceID) {
             self.filteredList.append(deviceID)
         }
     }

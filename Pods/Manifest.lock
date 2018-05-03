@@ -1,28 +1,28 @@
 PODS:
-  - Charts (3.0.5):
-    - Charts/Core (= 3.0.5)
-  - Charts/Core (3.0.5)
-  - EVReflection (5.5.2):
-    - EVReflection/Core (= 5.5.2)
-  - EVReflection/Core (5.5.2)
-  - iOSDFULibrary (4.1.1):
+  - Charts (3.1.1):
+    - Charts/Core (= 3.1.1)
+  - Charts/Core (3.1.1)
+  - EVReflection (5.6.1):
+    - EVReflection/Core (= 5.6.1)
+  - EVReflection/Core (5.6.1)
+  - iOSDFULibrary (4.1.3):
     - Zip (~> 1.0)
   - SWRevealViewController (2.3.0)
   - Zip (1.1.0)
 
 DEPENDENCIES:
-  - Charts (~> 3.0)
+  - Charts (~> 3.1)
   - EVReflection (~> 5.1)
-  - iOSDFULibrary (~> 4.0)
+  - iOSDFULibrary (~> 4.1)
   - SWRevealViewController (~> 2.3)
 
 SPEC CHECKSUMS:
-  Charts: 45cdc985b764c838b35ee47eb1365d15735f6d1a
-  EVReflection: d41e17998e6fe326bef86b836e980a8010afa5e4
-  iOSDFULibrary: 35e8a9e23d67759d57af9924d7a808e48c04583a
+  Charts: 90a4d61da0f6e06684c591e3bcab11940fe61736
+  EVReflection: d05ebbafc851b7a4cd3d625182662463a5819ab8
+  iOSDFULibrary: 921bc0e250ad204a68ffe0cc98a7cb6ac8b13b9f
   SWRevealViewController: 6d3fd97f70112fd7cef9de14df4260eacce4c63a
   Zip: 8877eede3dda76bcac281225c20e71c25270774c
 
-PODFILE CHECKSUM: c37d4f98f8d37042836148a8766642b9fbbf5054
+PODFILE CHECKSUM: 65608110d0cf357ad91084c9c45cf21d0a68cbde
 
 COCOAPODS: 1.3.1
